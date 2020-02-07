@@ -1,8 +1,3 @@
-/* E2 Library - JS */
-
-/*-----------------------------------------------------------*/
-/* Starter code - DO NOT edit the code below. */
-/*-----------------------------------------------------------*/
 
 // global counts
 let numberOfBooks = 0; // total number of books
@@ -27,8 +22,7 @@ class Book {
 
 	setLoanTime() {
 		// Create a setTimeout that waits 3 seconds before indicating a book is overdue
-
-		const self = this; // keep book in scope of anon function (why? the call-site for 'this' in the anon function is the DOM window)
+		const self = this; 
 		setTimeout(function() {
 
 			console.log('overdue book!', self.title)
@@ -48,8 +42,6 @@ const Patron = function(name) {
 }
 
 
-// Adding these books does not change the DOM - we are simply setting up the 
-// book and patron arrays as they appear initially in the DOM.
 libraryBooks.push(new Book('Harry Potter', 'J.K. Rowling', 'Fantasy'));
 libraryBooks.push(new Book('1984', 'G. Orwell', 'Dystopian Fiction'));
 libraryBooks.push(new Book('A Brief History of Time', 'S. Hawking', 'Cosmology'));
@@ -60,10 +52,10 @@ patrons.push(new Patron('Kelly Jones'))
 // Patron 0 loans book 0
 libraryBooks[0].patron = patrons[0]
 // Set the overdue timeout
-libraryBooks[0].setLoanTime()  // check console to see a log after 3 seconds
+libraryBooks[0].setLoanTime()  
 
 
-/* Select all DOM form elements you'll need. */
+/* Select all DOM form elements */
 const bookAddForm = document.querySelector('#bookAddForm');
 const bookInfoForm = document.querySelector('#bookInfoForm');
 const bookLoanForm = document.querySelector('#bookLoanForm');
@@ -83,26 +75,16 @@ bookLoanForm.addEventListener('submit', loanBookToPatron);
 patronAddForm.addEventListener('submit', addNewPatron)
 bookInfoForm.addEventListener('submit', getBookInfo);
 
-/* Listen for click patron entries - will have to check if it is a return button in returnBookToLibrary */
+/* Listen for click patron entries */
 patronEntries.addEventListener('click', returnBookToLibrary)
 
-/*-----------------------------------------------------------*/
-/* End of starter code - do *not* edit the code above. */
-/*-----------------------------------------------------------*/
 
 
-/** ADD your code to the functions below. DO NOT change the function signatures. **/
-
-
-/*** Functions that don't edit DOM themselves, but can call DOM functions
-     Use the book and patron arrays appropriately in these functions.
- ***/
 
 // Adds a new book to the global book list and calls addBookToLibraryTable()
 function addNewBookToBookList(e) {
 	e.preventDefault();
 
-	// Add book book to global array
 	//query for inputs:
 	const newBookName = document.querySelector('#newBookName').value;
 	const newBookAuthor = document.querySelector('#newBookAuthor').value;
@@ -111,7 +93,6 @@ function addNewBookToBookList(e) {
 	const newBook = new Book(newBookName, newBookAuthor, newBookGenre);
 	libraryBooks.push(newBook);
 
-	// Call addBookToLibraryTable properly to add book to the DOM
 	addBookToLibraryTable(newBook);
 }
 
@@ -127,7 +108,6 @@ function loanBookToPatron(e) {
 	// 1. find book
 	let borrowedBook;
 	for (let j = 0; j < numberOfBooks; j ++) {
-		// if (libraryBooks[j].bookId == loanBookId && libraryBooks[j].patron === null) {
 		if (libraryBooks[j].bookId == loanBookId) {
 			borrowedBook = libraryBooks[j]
 		}
@@ -173,7 +153,6 @@ function addNewPatron(e) {
 	const newPatron = new Patron(newPatronName)
 	patrons.push(newPatron)
 
-	// Call addNewPatronEntry() to add patron to the DOM
 	addNewPatronEntry(newPatron)
 }
 
@@ -183,7 +162,6 @@ function getBookInfo(e) {
 
 	// Get correct book
 	const bookInfoId = document.querySelector('#bookInfoId').value
-	//FIXME: What if the book doesnt exists??
 	for (let i = 0; i < numberOfBooks; i++) {
 		if (libraryBooks[i].bookId == bookInfoId) {
 			displayBookInfo(libraryBooks[bookInfoId])
@@ -194,7 +172,7 @@ function getBookInfo(e) {
 
 
 /*-----------------------------------------------------------*/
-/*** DOM functions below - use these to create and edit DOM objects ***/
+/*** DOM functions below ***/
 
 // Adds a book to the library table.
 function addBookToLibraryTable(book) {
@@ -220,7 +198,6 @@ function addBookToLibraryTable(book) {
 
 // Displays deatiled info on the book in the Book Info Section
 function displayBookInfo(book) {
-	//FIXME: QUESTION - IF THE BOOK DOESN'T EXIST, WHAT DO I DISPLAY?
 	const children = bookInfo.children;
 	for (let i = 0; i < children.length; i++) {
 		const row = children[i];
@@ -252,9 +229,7 @@ function displayBookInfo(book) {
 }
 
 // Adds a book to a patron's book list with a status of 'Within due date'. 
-// (don't forget to add a 'return' button).
 function addBookToPatronLoans(book) {
-	// Add code here
 	const newBookRow = document.createElement('tr')
 	const newBookId = document.createElement('td')
 	const newBookTitle = document.createElement('td')
@@ -287,8 +262,7 @@ function addBookToPatronLoans(book) {
 	bookTable.children[0].children[book.bookId + 1].children[2].replaceWith(newCirculationStatus)
 }
 
-// Adds a new patron with no books in their table to the DOM, including name, card number,
-// and blank book list (with only the <th> headers: BookID, Title, Status).
+// Adds a new patron with no books in their table to the DOM, including name, card number, and blank book list
 function addNewPatronEntry(patron) {
 	const newPatronTable = document.createElement('div')
 	newPatronTable.className = 'patron'
@@ -347,14 +321,12 @@ function addNewPatronEntry(patron) {
 // Removes book from patron's book table and remove patron card number from library book table
 function removeBookFromPatronTable(book) {
 	// Add code here
-	// console.log(patronEntries.children[book.patron.cardNumber].getElementsByTagName('table')[0].children[0].)
 	const newCirculationStatus = document.createElement('td')
 	bookTable.children[0].children[book.bookId + 1].children[2].replaceWith(newCirculationStatus)
 }
 
-// Set status to red 'Overdue' in the book's patron's book table.
+// Set status to 'Overdue' in the book's patron's book table.
 function changeToOverdue(book) {
-	// Add code here
 	const newStatusColour = document.createElement('span')
 	newStatusColour.className = 'red'
 	newStatusColour.appendChild(document.createTextNode('Overdue'))
