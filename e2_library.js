@@ -1,4 +1,3 @@
-
 // global counts
 let numberOfBooks = 0; // total number of books
 let numberOfPatrons = 0; // total number of patrons
@@ -13,7 +12,7 @@ class Book {
 		this.title = title;
 		this.author = author;
 		this.genre = genre;
-		this.patron = null; // will be the patron objet
+		this.patron = null; // will be the patron obj
 
 		// set book ID
 		this.bookId = numberOfBooks;
@@ -22,7 +21,7 @@ class Book {
 
 	setLoanTime() {
 		// Create a setTimeout that waits 3 seconds before indicating a book is overdue
-		const self = this; 
+		const self = this;
 		setTimeout(function() {
 
 			console.log('overdue book!', self.title)
@@ -52,7 +51,7 @@ patrons.push(new Patron('Kelly Jones'))
 // Patron 0 loans book 0
 libraryBooks[0].patron = patrons[0]
 // Set the overdue timeout
-libraryBooks[0].setLoanTime()  
+libraryBooks[0].setLoanTime()
 
 
 /* Select all DOM form elements */
@@ -75,16 +74,12 @@ bookLoanForm.addEventListener('submit', loanBookToPatron);
 patronAddForm.addEventListener('submit', addNewPatron)
 bookInfoForm.addEventListener('submit', getBookInfo);
 
-/* Listen for click patron entries */
 patronEntries.addEventListener('click', returnBookToLibrary)
-
-
-
 
 // Adds a new book to the global book list and calls addBookToLibraryTable()
 function addNewBookToBookList(e) {
 	e.preventDefault();
-
+	// Add book book to global array
 	//query for inputs:
 	const newBookName = document.querySelector('#newBookName').value;
 	const newBookAuthor = document.querySelector('#newBookAuthor').value;
@@ -96,7 +91,7 @@ function addNewBookToBookList(e) {
 	addBookToLibraryTable(newBook);
 }
 
-// Changes book patron information, and calls 
+// Changes book patron information, and calls
 function loanBookToPatron(e) {
 	e.preventDefault();
 
@@ -116,13 +111,10 @@ function loanBookToPatron(e) {
 	for (let i = 0; i < numberOfPatrons; i ++) {
 		if (patronId == patrons[i].cardNumber) {
 			if (!borrowedBook.patron) {
-				console.log('borrowed!')
 				borrowedBook.patron = patrons[patronId]
 				addBookToPatronLoans(borrowedBook)
 				// Start the book loan timer.
 				borrowedBook.setLoanTime()
-			} else {
-				console.log('book was taken out already')
 			}
 		}
 	}
@@ -138,16 +130,14 @@ function returnBookToLibrary(e){
 	if (e.target.classList.contains('return')) {
 		const retBookId = e.target.parentNode.parentNode.children[0].innerText
 		retBook = libraryBooks[retBookId]
-		e.target.parentNode.parentNode.parentNode.removeChild(e.target.parentNode.parentNode)
 		removeBookFromPatronTable(retBook)
-		retBook.patron = null
 	}
+	retBook.patron = null
 }
 
 // Creates and adds a new patron
 function addNewPatron(e) {
 	e.preventDefault();
-
 	// Add a new patron to global array
 	const newPatronName = document.querySelector('#newPatronName').value
 	const newPatron = new Patron(newPatronName)
@@ -159,7 +149,6 @@ function addNewPatron(e) {
 // Gets book info and then displays
 function getBookInfo(e) {
 	e.preventDefault();
-
 	// Get correct book
 	const bookInfoId = document.querySelector('#bookInfoId').value
 	for (let i = 0; i < numberOfBooks; i++) {
@@ -172,7 +161,7 @@ function getBookInfo(e) {
 
 
 /*-----------------------------------------------------------*/
-/*** DOM functions below ***/
+/*** DOM functions below  ***/
 
 // Adds a book to the library table.
 function addBookToLibraryTable(book) {
@@ -194,7 +183,6 @@ function addBookToLibraryTable(book) {
 	bookTable.firstElementChild.appendChild(newRow)
 
 }
-
 
 // Displays deatiled info on the book in the Book Info Section
 function displayBookInfo(book) {
@@ -228,7 +216,7 @@ function displayBookInfo(book) {
 	}
 }
 
-// Adds a book to a patron's book list with a status of 'Within due date'. 
+// Adds a book to a patron's book list with a status of 'Within due date'.
 function addBookToPatronLoans(book) {
 	const newBookRow = document.createElement('tr')
 	const newBookId = document.createElement('td')
@@ -256,13 +244,12 @@ function addBookToPatronLoans(book) {
 	newBookRow.appendChild(newReturnButton)
 
 	patronEntries.children[book.patron.cardNumber].getElementsByClassName('patronLoansTable')
-		.item(0).appendChild(newBookRow)
+		.item(0).firstElementChild.appendChild(newBookRow)
 	const newCirculationStatus = document.createElement('td')
 	newCirculationStatus.appendChild(document.createTextNode(book.patron.cardNumber))
 	bookTable.children[0].children[book.bookId + 1].children[2].replaceWith(newCirculationStatus)
 }
 
-// Adds a new patron with no books in their table to the DOM, including name, card number, and blank book list
 function addNewPatronEntry(patron) {
 	const newPatronTable = document.createElement('div')
 	newPatronTable.className = 'patron'
@@ -320,12 +307,22 @@ function addNewPatronEntry(patron) {
 
 // Removes book from patron's book table and remove patron card number from library book table
 function removeBookFromPatronTable(book) {
-	// Add code here
+	// get patron's loan table
+	const targetBookTable = document.getElementsByClassName("patronLoansTable")[book.patron.cardNumber].firstElementChild
+	let targetRow = targetBookTable.firstElementChild;
+	// find returning book
+	for (let i = 0; i < targetBookTable.children.length; i++) {
+		if (book.bookId != parseInt(targetRow.firstElementChild.innerText)) {
+			targetRow = targetRow.nextElementSibling
+		}
+	}
+	targetRow.parentElement.removeChild(targetRow)
+
+	// remove loan status from circulation table
 	const newCirculationStatus = document.createElement('td')
 	bookTable.children[0].children[book.bookId + 1].children[2].replaceWith(newCirculationStatus)
 }
 
-// Set status to 'Overdue' in the book's patron's book table.
 function changeToOverdue(book) {
 	const newStatusColour = document.createElement('span')
 	newStatusColour.className = 'red'
